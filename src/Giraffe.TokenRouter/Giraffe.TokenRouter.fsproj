@@ -11,7 +11,7 @@
     <WarningsAsErrors>1</WarningsAsErrors>
     <Optimize>True</Optimize>
     <OutputType>Library</OutputType>
-    <PackageId>Giraffe.Razor</PackageId>
+    <PackageId>Giraffe.TokenRouter</PackageId>
     <PackageTags>Giraffe;TokenRouter;Routing;ASP.NET Core;FSharp;Functional;Http;Web;Framework;Micro;Service</PackageTags>
     <PackageReleaseNotes>https://raw.githubusercontent.com/giraffe-fsharp/Giraffe.TokenRouter/master/RELEASE_NOTES.md</PackageReleaseNotes>
     <PackageIconUrl>https://raw.githubusercontent.com/giraffe-fsharp/Giraffe/master/giraffe-64x64.png</PackageIconUrl>
