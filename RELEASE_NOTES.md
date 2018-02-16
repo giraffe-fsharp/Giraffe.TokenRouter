@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+## 0.1.0-beta-110
+
+- Updated Giraffe to version `1.1.0`.
+
 ## 0.1.0-beta-100
 
 - Moved `Giraffe.TokenRouter` into its own repository with its own release cycle and NuGet package deployment.
