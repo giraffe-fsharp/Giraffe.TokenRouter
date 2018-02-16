@@ -1496,6 +1496,7 @@ type DebugTests(output:ITestOutputHelper) =
                 Assert.Equal(expected, body)
         }
 
+    [<Fact>]
     member __.``Test routePorts function`` () =
         let ctx = Substitute.For<HttpContext>()
         let notFound = (setStatusCode 404 >=> text "Not Found")
@@ -1522,9 +1523,8 @@ type DebugTests(output:ITestOutputHelper) =
 
         let expected = "newpassword2"
         ctx.Request.Method.ReturnsForAnyArgs "POST" |> ignore
-        ctx.Request.Path.ReturnsForAnyArgs (PathString("/api/newpassword2")) |> ignore
-        ctx.Request.Host.Port.HasValue.ReturnsForAnyArgs true |> ignore
-        ctx.Request.Host.Port.Value.ReturnsForAnyArgs 9002 |> ignore
+        ctx.Request.Path.ReturnsForAnyArgs (PathString("/api2/newpassword2")) |> ignore
+        ctx.Request.Host.ReturnsForAnyArgs (HostString("", 9002)) |> ignore
         ctx.Response.Body <- new MemoryStream()
 
         task {
