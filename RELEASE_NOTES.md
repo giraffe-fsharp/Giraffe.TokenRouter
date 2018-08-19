@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+## 1.0.0
+
+- Updated Giraffe to version `2.0.0`.
+- Removed all other (redundant) dependencies.
+
 ## 0.1.0-beta-110
 
 - Updated Giraffe to version `1.1.0`.
