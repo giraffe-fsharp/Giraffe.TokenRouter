@@ -29,6 +29,11 @@ function Invoke-Cmd ($cmd)
     if ($LastExitCode -ne 0) { Write-Error "An error occured when executing '$cmd'."; return }
 }
 
+function dotnet-info                      { Invoke-Cmd "dotnet --info" }
+function dotnet-version                   { Invoke-Cmd "dotnet --version" }
+function dotnet-run     ($project, $argv) { Invoke-Cmd "dotnet run --project $project $argv" }
+function dotnet-pack    ($project, $argv) { Invoke-Cmd "dotnet pack $project $argv" }
+
 function Get-DotNetRuntimeVersion
 {
     $info = dotnet-info
@@ -53,11 +58,6 @@ function Get-NetCoreTargetFramework ($projFile)
 {
     Get-TargetFrameworks $projFile | where { $_ -like "netstandard*" -or $_ -like "netcoreapp*" }
 }
-
-function dotnet-info                      { Invoke-Cmd "dotnet --info" }
-function dotnet-version                   { Invoke-Cmd "dotnet --version" }
-function dotnet-run     ($project, $argv) { Invoke-Cmd "dotnet run --project $project $argv" }
-function dotnet-pack    ($project, $argv) { Invoke-Cmd "dotnet pack $project $argv" }
 
 function dotnet-build ($project, $argv)
 {
