@@ -1491,6 +1491,53 @@ let ``POST "/redirect" redirect to "/" `` () =
         | Some ctx -> ctx.Response.Received().Redirect("/", true)
     }
 
+[<Fact>]
+let ``HEAD "/foo/johndoe" returns a 204 response`` () =
+    let ctx = Substitute.For<HttpContext>()
+    let app =
+        router notFound [
+            HEAD [
+                route  "/"         => text "Hello World"
+                route  "/redirect" => redirectTo true "/"
+                routef "/foo/%s"      (fun _ -> Successful.NO_CONTENT)
+            ]
+        ]
+
+    ctx.Request.Method.ReturnsForAnyArgs "HEAD" |> ignore
+    ctx.Request.Path.ReturnsForAnyArgs (PathString("/foo/johndoe")) |> ignore
+
+    task {
+        let! result = app next ctx
+
+        match result with
+        | None     -> assertFail "The request should have matched the /foo/%s route"
+        | Some ctx -> Assert.Equal(204, ctx.Response.StatusCode)
+    }
+
+[<Fact>]
+let ``OPTIONS "/foo/johndoe" returns a 200 response`` () =
+    let ctx = Substitute.For<HttpContext>()
+    let app =
+        router notFound [
+            OPTIONS [
+                route  "/"         => text "Hello World"
+                route  "/redirect" => redirectTo true "/"
+                routef "/foo/%s"      (fun _ -> setStatusCode 200 >=> text "howdy")
+            ]
+        ]
+
+    ctx.Request.Method.ReturnsForAnyArgs "OPTIONS" |> ignore
+    ctx.Request.Path.ReturnsForAnyArgs (PathString("/foo/johndoe")) |> ignore
+    ctx.Response.Body <- new MemoryStream()
+
+    task {
+        let! result = app next ctx
+
+        match result with
+        | None     -> assertFail "The request should have matched the /foo/%s route"
+        | Some ctx -> Assert.Equal(200, ctx.Response.StatusCode)
+    }
+
 type DebugTests(output:ITestOutputHelper) =
 
     [<Fact>]
