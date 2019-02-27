@@ -578,6 +578,31 @@ let ``GET "/foo/johndoe/FE9CFE1935D44EDC9A955D38C4D579BD" returns "Name: johndoe
         | Some ctx -> Assert.Equal(expected, getBody ctx, true)
     }
 
+[<Fact>]
+let ``GET "/foo/johndoe/Gf6c_tQ13E6alV04xNV5vQ" returns "Name: johndoe, Id: FE9CFE19-35D4-4EDC-9A95-5D38C4D579BD"`` () =
+    let ctx = Substitute.For<HttpContext>()
+    let app =
+        router notFound [
+            GET [
+                route   "/"       => text "Hello World"
+                route   "/foo"    => text "bar"
+                routef "/foo/%s/bar" text
+                routef "/foo/%s/%O" (fun (name, id: Guid) -> text (sprintf "Name: %s, Id: %O" name id))
+            ]
+        ]
+
+    ctx.Request.Method.ReturnsForAnyArgs "GET" |> ignore
+    ctx.Request.Path.ReturnsForAnyArgs (PathString("/foo/johndoe/Gf6c_tQ13E6alV04xNV5vQ")) |> ignore
+    ctx.Response.Body <- new MemoryStream()
+    let expected = "Name: johndoe, Id: FE9CFE19-35D4-4EDC-9A95-5D38C4D579BD"
+
+    task {
+        let! result = app next ctx
+        match result with
+        | None     -> assertFailf "Result was expected to be %s" expected
+        | Some ctx -> Assert.Equal(expected, getBody ctx, true)
+    }
+
 // [<Fact>]
 // let ``POST "/POsT/1" returns "1"`` () =
 //     let ctx = Substitute.For<HttpContext>()
