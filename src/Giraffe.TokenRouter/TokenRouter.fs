@@ -1,5 +1,6 @@
 module Giraffe.TokenRouter
 
+open FSharp.Control.Tasks.V2.ContextInsensitive
 open System.Collections.Generic
 open System.Text
 open Microsoft.FSharp.Reflection
