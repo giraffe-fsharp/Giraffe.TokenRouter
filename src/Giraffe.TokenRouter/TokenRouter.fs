@@ -1,5 +1,6 @@
 module Giraffe.TokenRouter
 
+open FSharp.Control.Tasks.V2.ContextInsensitive
 open System.Collections.Generic
 open System.Text
 open Microsoft.FSharp.Reflection
@@ -511,11 +512,13 @@ let private methodFns (meth:string) (fns:(Node->Node) list) (parent:Node) =
     parent.AddMidFn <| MethodMatch(meth,child)
     child
 
-let GET    fns = methodFns "GET"    fns
-let POST   fns = methodFns "POST"   fns
-let PUT    fns = methodFns "PUT"    fns
-let DELETE fns = methodFns "DELETE" fns
-let PATCH  fns = methodFns "PATCH"  fns
+let GET     fns = methodFns "GET"     fns
+let HEAD    fns = methodFns "HEAD"    fns
+let POST    fns = methodFns "POST"    fns
+let PUT     fns = methodFns "PUT"     fns
+let DELETE  fns = methodFns "DELETE"  fns
+let OPTIONS fns = methodFns "OPTIONS" fns
+let PATCH   fns = methodFns "PATCH"   fns
 
 ///**Description**
 /// HttpHandler funtion that accepts a list of route mapping functions and builds a route tree for fast processing of request routes

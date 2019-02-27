@@ -17,6 +17,7 @@ open Giraffe
 open Giraffe.Serialization
 open Giraffe.GiraffeViewEngine
 open Giraffe.TokenRouter
+open FSharp.Control.Tasks.V2.ContextInsensitive
 
 // ---------------------------------
 // XmlAssert
@@ -345,7 +346,7 @@ let ``POST "/text" with supported Accept header returns "good"`` () =
         | Some ctx ->
             let body = getBody ctx
             Assert.Equal(expected, body)
-            Assert.Equal("text/plain", ctx.Response |> getContentType)
+            Assert.Equal("text/plain; charset=utf-8", ctx.Response |> getContentType)
     }
 
 [<Fact>]
@@ -379,7 +380,7 @@ let ``POST "/json" with supported Accept header returns "json"`` () =
         | Some ctx ->
             let body = getBody ctx
             Assert.Equal(expected, body)
-            Assert.Equal("application/json", ctx.Response |> getContentType)
+            Assert.Equal("application/json; charset=utf-8", ctx.Response |> getContentType)
     }
 
 [<Fact>]
@@ -412,7 +413,7 @@ let ``POST "/either" with supported Accept header returns "either"`` () =
         | Some ctx ->
             let body = getBody ctx
             Assert.Equal(expected, body)
-            Assert.Equal("text/plain", ctx.Response |> getContentType)
+            Assert.Equal("text/plain; charset=utf-8", ctx.Response |> getContentType)
     }
 
 [<Fact>]
@@ -567,6 +568,31 @@ let ``GET "/foo/johndoe/FE9CFE1935D44EDC9A955D38C4D579BD" returns "Name: johndoe
 
     ctx.Request.Method.ReturnsForAnyArgs "GET" |> ignore
     ctx.Request.Path.ReturnsForAnyArgs (PathString("/foo/johndoe/FE9CFE1935D44EDC9A955D38C4D579BD")) |> ignore
+    ctx.Response.Body <- new MemoryStream()
+    let expected = "Name: johndoe, Id: FE9CFE19-35D4-4EDC-9A95-5D38C4D579BD"
+
+    task {
+        let! result = app next ctx
+        match result with
+        | None     -> assertFailf "Result was expected to be %s" expected
+        | Some ctx -> Assert.Equal(expected, getBody ctx, true)
+    }
+
+[<Fact>]
+let ``GET "/foo/johndoe/Gf6c_tQ13E6alV04xNV5vQ" returns "Name: johndoe, Id: FE9CFE19-35D4-4EDC-9A95-5D38C4D579BD"`` () =
+    let ctx = Substitute.For<HttpContext>()
+    let app =
+        router notFound [
+            GET [
+                route   "/"       => text "Hello World"
+                route   "/foo"    => text "bar"
+                routef "/foo/%s/bar" text
+                routef "/foo/%s/%O" (fun (name, id: Guid) -> text (sprintf "Name: %s, Id: %O" name id))
+            ]
+        ]
+
+    ctx.Request.Method.ReturnsForAnyArgs "GET" |> ignore
+    ctx.Request.Path.ReturnsForAnyArgs (PathString("/foo/johndoe/Gf6c_tQ13E6alV04xNV5vQ")) |> ignore
     ctx.Response.Body <- new MemoryStream()
     let expected = "Name: johndoe, Id: FE9CFE19-35D4-4EDC-9A95-5D38C4D579BD"
 
@@ -895,7 +921,7 @@ let ``GET "/person" returns rendered HTML view`` () =
         | Some ctx ->
             let body = (getBody ctx).Replace(Environment.NewLine, String.Empty)
             Assert.Equal(expected, body)
-            Assert.Equal("text/html", ctx.Response |> getContentType)
+            Assert.Equal("text/html; charset=utf-8", ctx.Response |> getContentType)
     }
 
 [<Fact>]
@@ -939,7 +965,7 @@ let ``Get "/auto" with Accept header of "application/json" returns JSON object``
         | Some ctx ->
             let body = getBody ctx
             Assert.Equal(expected, body)
-            Assert.Equal("application/json", ctx.Response |> getContentType)
+            Assert.Equal("application/json; charset=utf-8", ctx.Response |> getContentType)
     }
 
 [<Fact>]
@@ -983,7 +1009,7 @@ let ``Get "/auto" with Accept header of "application/xml; q=0.9, application/jso
         | Some ctx ->
             let body = getBody ctx
             Assert.Equal(expected, body)
-            Assert.Equal("application/json", ctx.Response |> getContentType)
+            Assert.Equal("application/json; charset=utf-8", ctx.Response |> getContentType)
     }
 
 [<Fact>]
@@ -1037,7 +1063,7 @@ let ``Get "/auto" with Accept header of "application/xml" returns XML object`` (
         | Some ctx ->
             let body = getBody ctx
             XmlAssert.equals expected body
-            Assert.Equal("application/xml", ctx.Response |> getContentType)
+            Assert.Equal("application/xml; charset=utf-8", ctx.Response |> getContentType)
     }
 
 [<Fact>]
@@ -1091,7 +1117,7 @@ let ``Get "/auto" with Accept header of "application/xml, application/json" retu
         | Some ctx ->
             let body = getBody ctx
             XmlAssert.equals expected body
-            Assert.Equal("application/xml", ctx.Response |> getContentType)
+            Assert.Equal("application/xml; charset=utf-8", ctx.Response |> getContentType)
     }
 
 [<Fact>]
@@ -1135,7 +1161,7 @@ let ``Get "/auto" with Accept header of "application/json, application/xml" retu
         | Some ctx ->
             let body = getBody ctx
             Assert.Equal(expected, body)
-            Assert.Equal("application/json", ctx.Response |> getContentType)
+            Assert.Equal("application/json; charset=utf-8", ctx.Response |> getContentType)
     }
 
 [<Fact>]
@@ -1189,7 +1215,7 @@ let ``Get "/auto" with Accept header of "application/json; q=0.5, application/xm
         | Some ctx ->
             let body = getBody ctx
             XmlAssert.equals expected body
-            Assert.Equal("application/xml", ctx.Response |> getContentType)
+            Assert.Equal("application/xml; charset=utf-8", ctx.Response |> getContentType)
     }
 
 [<Fact>]
@@ -1243,7 +1269,7 @@ let ``Get "/auto" with Accept header of "application/json; q=0.5, application/xm
         | Some ctx ->
             let body = getBody ctx
             XmlAssert.equals expected body
-            Assert.Equal("application/xml", ctx.Response |> getContentType)
+            Assert.Equal("application/xml; charset=utf-8", ctx.Response |> getContentType)
     }
 
 [<Fact>]
@@ -1290,7 +1316,7 @@ Piercings: [|""ear""; ""nose""|]"
         | Some ctx ->
             let body = getBody ctx
             Assert.Equal(expected, body)
-            Assert.Equal("text/plain", ctx.Response |> getContentType)
+            Assert.Equal("text/plain; charset=utf-8", ctx.Response |> getContentType)
     }
 
 [<Fact>]
@@ -1334,7 +1360,7 @@ let ``Get "/auto" with Accept header of "text/html" returns a 406 response`` () 
             let body = getBody ctx
             Assert.Equal(406, getStatusCode ctx)
             Assert.Equal(expected, body)
-            Assert.Equal("text/plain", ctx.Response |> getContentType)
+            Assert.Equal("text/plain; charset=utf-8", ctx.Response |> getContentType)
     }
 
 [<Fact>]
@@ -1377,7 +1403,7 @@ let ``Get "/auto" without an Accept header returns a JSON object`` () =
         | Some ctx ->
             let body = getBody ctx
             Assert.Equal(expected, body)
-            Assert.Equal("application/json", ctx.Response |> getContentType)
+            Assert.Equal("application/json; charset=utf-8", ctx.Response |> getContentType)
     }
 
 [<Fact>]
@@ -1463,6 +1489,53 @@ let ``POST "/redirect" redirect to "/" `` () =
         match result with
         | None     -> assertFail "It was expected that the request would be redirected"
         | Some ctx -> ctx.Response.Received().Redirect("/", true)
+    }
+
+[<Fact>]
+let ``HEAD "/foo/johndoe" returns a 204 response`` () =
+    let ctx = Substitute.For<HttpContext>()
+    let app =
+        router notFound [
+            HEAD [
+                route  "/"         => text "Hello World"
+                route  "/redirect" => redirectTo true "/"
+                routef "/foo/%s"      (fun _ -> Successful.NO_CONTENT)
+            ]
+        ]
+
+    ctx.Request.Method.ReturnsForAnyArgs "HEAD" |> ignore
+    ctx.Request.Path.ReturnsForAnyArgs (PathString("/foo/johndoe")) |> ignore
+
+    task {
+        let! result = app next ctx
+
+        match result with
+        | None     -> assertFail "The request should have matched the /foo/%s route"
+        | Some ctx -> Assert.Equal(204, ctx.Response.StatusCode)
+    }
+
+[<Fact>]
+let ``OPTIONS "/foo/johndoe" returns a 200 response`` () =
+    let ctx = Substitute.For<HttpContext>()
+    let app =
+        router notFound [
+            OPTIONS [
+                route  "/"         => text "Hello World"
+                route  "/redirect" => redirectTo true "/"
+                routef "/foo/%s"      (fun _ -> setStatusCode 200 >=> text "howdy")
+            ]
+        ]
+
+    ctx.Request.Method.ReturnsForAnyArgs "OPTIONS" |> ignore
+    ctx.Request.Path.ReturnsForAnyArgs (PathString("/foo/johndoe")) |> ignore
+    ctx.Response.Body <- new MemoryStream()
+
+    task {
+        let! result = app next ctx
+
+        match result with
+        | None     -> assertFail "The request should have matched the /foo/%s route"
+        | Some ctx -> Assert.Equal(200, ctx.Response.StatusCode)
     }
 
 type DebugTests(output:ITestOutputHelper) =
