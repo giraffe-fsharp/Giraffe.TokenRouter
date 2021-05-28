@@ -4,6 +4,7 @@
     <TargetFrameworks>net461;netcoreapp2.1</TargetFrameworks>
     <AssemblyName>Giraffe.TokenRouter.Tests</AssemblyName>
     <DebugType>portable</DebugType>
+    <RollForward>Major</RollForward>
   </PropertyGroup>
 
   <ItemGroup>

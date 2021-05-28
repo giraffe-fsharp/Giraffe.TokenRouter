@@ -2,11 +2,12 @@
   <PropertyGroup>
     <AssemblyName>Giraffe.TokenRouter</AssemblyName>
     <Version>1.0.0</Version>
-    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net5.0</TargetFrameworks>
+    <RollForward>Major</RollForward>
 
     <!-- General info -->
     <Description>Alternative routing API for Giraffe web applications which is aimed at maximum performance.</Description>
-    <Copyright>Copyright 2018 Dustin Moris Gorski</Copyright>
+    <Copyright>Copyright 2021 Dustin Moris Gorski</Copyright>
     <Authors>Dustin Moris Gorski and contributors</Authors>
     <NeutralLanguage>en-GB</NeutralLanguage>
 
@@ -32,7 +33,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Giraffe" Version="2.0.*" />
+    <PackageReference Include="Giraffe" Version="5.0.*" />
   </ItemGroup>
 
   <ItemGroup>
