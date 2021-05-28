@@ -1,6 +1,11 @@
 Release Notes
 =============
 
+## 2.0.0
+
+- Updated to `net5.0` and dropped support for `net461` and `netstandard2.0`
+- Upgraded to Giraffe 5
+
 ## 1.0.0
 
 - Updated Giraffe to version `2.0.0`.
