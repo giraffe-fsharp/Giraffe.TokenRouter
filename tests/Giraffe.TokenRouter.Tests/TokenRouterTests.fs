@@ -14,9 +14,9 @@ open Xunit.Abstractions
 open NSubstitute
 open Newtonsoft.Json
 open Giraffe
-open Giraffe.Serialization
-open Giraffe.GiraffeViewEngine
 open Giraffe.TokenRouter
+open Giraffe.ViewEngine
+open FSharp.Control.Tasks
 
 // ---------------------------------
 // XmlAssert
@@ -78,16 +78,16 @@ let next : HttpFunc = Some >> Task.FromResult
 
 let mockJson (ctx : HttpContext) (settings : JsonSerializerSettings option) =
     let jsonSettings =
-        defaultArg settings NewtonsoftJsonSerializer.DefaultSettings
+        defaultArg settings NewtonsoftJson.Serializer.DefaultSettings
     ctx.RequestServices
-       .GetService(typeof<IJsonSerializer>)
-       .Returns(NewtonsoftJsonSerializer(jsonSettings))
+       .GetService(typeof<Json.ISerializer>)
+       .Returns(NewtonsoftJson.Serializer(jsonSettings))
     |> ignore
 
 let mockXml (ctx : HttpContext) =
     ctx.RequestServices
-       .GetService(typeof<IXmlSerializer>)
-       .Returns(DefaultXmlSerializer(DefaultXmlSerializer.DefaultSettings))
+       .GetService(typeof<Xml.ISerializer>)
+       .Returns(SystemXml.Serializer(SystemXml.Serializer.DefaultSettings))
     |> ignore
 
 let mockNegotiation (ctx : HttpContext) =
