@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+## 3.0.0-alpha-1
+
+- Updated to .NET 6 and Giraffe 6.0.0-alpha-*
+
 ## 2.0.0
 
 - Updated to `net5.0` and dropped support for `net461` and `netstandard2.0`
