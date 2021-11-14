@@ -6,7 +6,6 @@ open Microsoft.FSharp.Reflection
 open Printf
 open Giraffe
 open Giraffe.TokenParsers
-open FSharp.Control.Tasks
 
 // Implemenation of (router) Trie Node
 // --------------------------------------

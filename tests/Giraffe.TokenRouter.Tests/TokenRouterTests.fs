@@ -16,7 +16,6 @@ open Newtonsoft.Json
 open Giraffe
 open Giraffe.TokenRouter
 open Giraffe.ViewEngine
-open FSharp.Control.Tasks
 
 // ---------------------------------
 // XmlAssert
