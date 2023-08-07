@@ -500,6 +500,32 @@ let ``GET "/foo/blah blah/bar" returns "blah blah"`` () =
         | Some ctx -> Assert.Equal(expected, getBody ctx)
     }
 
+
+[<Fact>]
+let ``GET "/foo/tgz/test" returns "tgz"`` () =
+    let ctx = Substitute.For<HttpContext>()
+    let app =
+        router notFound [
+            GET [
+                route   "/"       => text "Hello World"
+                route   "/foo"    => text "bar"
+                routef "/foo/%s/%s/" (fun (operator, test) -> text (operator+" "+test))
+            ]
+        ]
+
+    ctx.Request.Method.ReturnsForAnyArgs "GET" |> ignore
+    ctx.Request.Path.ReturnsForAnyArgs (PathString("/foo/tgz/test/")) |> ignore
+    ctx.Response.Body <- new MemoryStream()
+    let expected = "tgz test"
+
+    task {
+        let! result = app next ctx
+
+        match result with
+        | None     -> assertFailf "Result was expected to be %s" expected
+        | Some ctx -> Assert.Equal(expected, getBody ctx)
+    }
+
 [<Fact>]
 let ``GET "/foo/johndoe/59" returns "Name: johndoe, Age: 59"`` () =
     let ctx = Substitute.For<HttpContext>()
