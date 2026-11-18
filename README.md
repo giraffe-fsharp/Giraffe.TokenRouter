@@ -6,10 +6,7 @@ Alternative routing API for Giraffe web applications which is aimed at maximum p
 
 [![NuGet Info](https://buildstats.info/nuget/Giraffe.TokenRouter?includePreReleases=true)](https://www.nuget.org/packages/Giraffe.TokenRouter/)
 
-| Windows | Linux |
-| :------ | :---- |
-| [![Windows Build status](https://ci.appveyor.com/api/projects/status/914030ec0lrc0vti/branch/develop?svg=true)](https://ci.appveyor.com/project/dustinmoris/giraffe-tokenrouter/branch/develop) | [![Linux Build status](https://travis-ci.org/giraffe-fsharp/Giraffe.TokenRouter.svg?branch=develop)](https://travis-ci.org/giraffe-fsharp/Giraffe.TokenRouter/builds?branch=develop) |
-| [![Windows Build history](https://buildstats.info/appveyor/chart/dustinmoris/giraffe-tokenrouter?branch=develop&includeBuildsFromPullRequest=false)](https://ci.appveyor.com/project/dustinmoris/giraffe-tokenrouter/history?branch=develop) | [![Linux Build history](https://buildstats.info/travisci/chart/giraffe-fsharp/Giraffe.TokenRouter?branch=develop&includeBuildsFromPullRequest=false)](https://travis-ci.org/giraffe-fsharp/Giraffe.TokenRouter/builds?branch=develop) |
+[![Build and test](https://github.com/giraffe-fsharp/Giraffe.TokenRouter/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/giraffe-fsharp/Giraffe.TokenRouter/actions/workflows/build.yml)
 
 ## Table of contents
 
@@ -86,13 +83,19 @@ The existing .NET 6 target frameworks are unchanged.
 
 All official Giraffe packages are published to the official and public NuGet feed.
 
-Unofficial builds (such as pre-release builds from the `develop` branch and pull requests) produce unofficial pre-release NuGet packages which can be pulled from the project's public NuGet feed on AppVeyor:
+`master` is the integration branch; open pull requests against `master`.
+GitHub Actions builds and tests pull requests and pushes to `master` on Linux,
+Windows and macOS. Successful pushes to `master` also publish unofficial
+pre-release packages to the [project's NuGet feed on GitHub](https://github.com/orgs/giraffe-fsharp/packages).
+Pull requests never publish packages. Official nuget.org publication remains
+triggered only by a published GitHub release.
 
-```
-https://ci.appveyor.com/nuget/giraffe-tokenrouter
-```
+Unofficial packages use the version `0.0.0-ci.<run-id>`. Pull-request packages
+can be downloaded from the `nupkg` artifact on the GitHub Actions run.
 
-If you add this source to your NuGet CLI or project settings then you can pull unofficial NuGet packages for quick feature testing or urgent hot fixes.
+After merging the master-only migration, maintainers can remove the obsolete
+`develop` branch and its branch protection rule. Check that it still has no
+commits missing from `master` before deleting it.
 
 ## More information
 
