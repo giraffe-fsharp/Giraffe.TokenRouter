@@ -12,7 +12,7 @@ open Microsoft.Extensions.Primitives
 open Xunit
 open Xunit.Abstractions
 open NSubstitute
-open Newtonsoft.Json
+open System.Text.Json
 open Giraffe
 open Giraffe.TokenRouter
 open Giraffe.ViewEngine
@@ -75,12 +75,12 @@ let assertFailf format args =
 let notFound = setStatusCode 404 >=> text "Not found"
 let next : HttpFunc = Some >> Task.FromResult
 
-let mockJson (ctx : HttpContext) (settings : JsonSerializerSettings option) =
+let mockJson (ctx : HttpContext) (settings : JsonSerializerOptions option) =
     let jsonSettings =
-        defaultArg settings NewtonsoftJson.Serializer.DefaultSettings
+        defaultArg settings Json.Serializer.DefaultOptions
     ctx.RequestServices
        .GetService(typeof<Json.ISerializer>)
-       .Returns(NewtonsoftJson.Serializer(jsonSettings))
+       .Returns(Json.Serializer(jsonSettings))
     |> ignore
 
 let mockXml (ctx : HttpContext) =

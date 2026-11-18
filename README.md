@@ -80,6 +80,10 @@ let app =
 
 ## Nightly builds and NuGet feed
 
+The library uses Giraffe `8.3.0`; its tests use Giraffe.ViewEngine
+`2.0.0-alpha-1`, the latest published version including prereleases.
+The existing .NET 6 target frameworks are unchanged.
+
 All official Giraffe packages are published to the official and public NuGet feed.
 
 Unofficial builds (such as pre-release builds from the `develop` branch and pull requests) produce unofficial pre-release NuGet packages which can be pulled from the project's public NuGet feed on AppVeyor:
