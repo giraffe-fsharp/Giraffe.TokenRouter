@@ -80,9 +80,22 @@ let app =
 
 ## Nightly builds and NuGet feed
 
-The library uses Giraffe `8.3.0`; its tests use Giraffe.ViewEngine
-`2.0.0-alpha-1`, the latest published version including prereleases.
-The existing .NET 6 target frameworks are unchanged.
+### NuGet trusted publishing
+
+GitHub releases publish through [build.yml](.github/workflows/build.yml) using
+GitHub OIDC and `NuGet/login` as the personal NuGet account `dsyme`, with package
+permissions provided by the `fsprojects` NuGet organization.
+
+Before publishing, configure a [NuGet trusted publishing policy](https://www.nuget.org/account/trustedpublishing)
+with package owner `fsprojects`, GitHub repository owner `giraffe-fsharp`,
+repository `Giraffe.TokenRouter`, workflow filename `build.yml`, no environment,
+and scope to push new versions of the existing package `Giraffe.TokenRouter`.
+Keep `dsyme` an active member of the NuGet organization.
+
+After a successful trusted-publishing release, remove the obsolete GitHub
+`NUGET_KEY` secret and revoke its NuGet API key if it is not used elsewhere.
+
+### Package feeds
 
 All official Giraffe packages are published to the official and public NuGet feed.
 
